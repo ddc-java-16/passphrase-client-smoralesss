@@ -18,6 +18,8 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.navigation.safeargs)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.junit)
 }
 
@@ -36,17 +38,17 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["runnerBuilder"] =
-            "de.mannodermaus.junit5.AndroidJUnit5Builder"
+                "de.mannodermaus.junit5.AndroidJUnit5Builder"
 
         resValue("string", "app_name", project.property("appName") as String)
-
+        resValue("string", "service_base_url", project.property("serviceBaseUrl") as String)
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+                    getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -73,6 +75,11 @@ dependencies {
     implementation(libs.constraint.layout)
     implementation(libs.recycler.view)
 
+    // Navigation libraries
+    implementation(libs.navigation.fragment)
+    implementation(libs.fragment)
+    implementation(libs.navigation.ui)
+
     // Lifecycle (LiveData and ViewModel) libraries
     runtimeOnly(libs.lifecycle.viewmodel)
     runtimeOnly(libs.lifecycle.livedata)
@@ -82,6 +89,26 @@ dependencies {
 
     // Material Design components
     implementation(libs.material)
+
+    // Libraries for accessing HTTP resources
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.adapter.rx.java)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    // Libraries for Reactive streams
+    implementation(libs.rx.java)
+    implementation(libs.rx.android)
+
+    // Library for JSON parsing
+    implementation(libs.gson)
+
+    // Library for Google Sign-In
+    implementation(libs.play.auth)
+
+    // Libraries for dependency injection
+    implementation(libs.hilt.android.core)
+    annotationProcessor(libs.hilt.compiler)
 
     // Libraries for JVM-based testing.
     testImplementation(libs.junit.api)
