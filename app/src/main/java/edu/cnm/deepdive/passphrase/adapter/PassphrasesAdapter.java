@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,6 +22,7 @@ public class PassphrasesAdapter extends RecyclerView.Adapter<Holder> {
   private final int evenRowColor;
   @ColorInt
   private final int oddRowColor;
+
   public PassphrasesAdapter(Context context, List<Passphrase> passphrases) {
     this.passphrases = passphrases;
     inflater = LayoutInflater.from(context);
@@ -32,24 +34,32 @@ public class PassphrasesAdapter extends RecyclerView.Adapter<Holder> {
   @NotNull
   @Override
   public Holder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-    return null;
+    return new Holder(inflater.inflate(R.layout.item_passphrases, parent, false));
   }
 
   @Override
   public void onBindViewHolder(@NonNull @NotNull Holder holder, int position) {
-
+    holder.bind(position);
   }
 
   @Override
   public int getItemCount() {
-    return 0;
+    return passphrases.size();
   }
 
   public class Holder extends RecyclerView.ViewHolder {
 
-    public Holder(
+    private Holder(
         @NonNull @NotNull View itemView) {
       super(itemView);
     }
+
+    private void bind(int position) {
+      ((TextView) itemView).setText(passphrases.get(position).getName());
+      itemView.setBackgroundColor((position % 2 == 0) ? evenRowColor : oddRowColor);
+      // TODO: 11/2/23 Attach listener for long-press.
+    }
   }
+
+
 }

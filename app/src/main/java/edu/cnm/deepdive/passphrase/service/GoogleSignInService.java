@@ -49,7 +49,6 @@ if (clientId != null && !clientId.isEmpty()) {
             client
                 .silentSignIn()
                 .addOnSuccessListener(emitter::onSuccess)
-                .addOnSuccessListener((account) -> Log.d(getClass().getSimpleName(), account.getIdToken())) // FIXME: 10/30/23 Get rid of this after testing.
                 .addOnFailureListener(emitter::onError)
         )
         .observeOn(Schedulers.io());
@@ -71,7 +70,6 @@ if (clientId != null && !clientId.isEmpty()) {
                 GoogleSignIn.getSignedInAccountFromIntent(result.getData());
             GoogleSignInAccount account = task.getResult(ApiException.class);
             emitter.onSuccess(account);
-            Log.d(getClass().getSimpleName(), account.getIdToken());
           } catch (ApiException e) {
             emitter.onError(e);
           }
