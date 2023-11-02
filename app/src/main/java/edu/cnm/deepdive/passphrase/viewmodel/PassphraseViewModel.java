@@ -2,6 +2,7 @@ package edu.cnm.deepdive.passphrase.viewmodel;
 
 import android.content.Context;
 import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -14,7 +15,6 @@ import edu.cnm.deepdive.passphrase.service.PassphraseRepository;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 
 @HiltViewModel
 public class PassphraseViewModel extends ViewModel implements DefaultLifecycleObserver {
@@ -24,9 +24,9 @@ public class PassphraseViewModel extends ViewModel implements DefaultLifecycleOb
   private final MutableLiveData<List<Passphrase>> passphrases;
   private final MutableLiveData<Throwable> throwable;
   private final CompositeDisposable pending;
+
   @Inject
   PassphraseViewModel(@ApplicationContext Context context, PassphraseRepository repository) {
-
     this.repository = repository;
     passphrase = new MutableLiveData<>();
     passphrases = new MutableLiveData<>();
@@ -46,9 +46,38 @@ public class PassphraseViewModel extends ViewModel implements DefaultLifecycleOb
     return throwable;
   }
 
-  // TODO: 11/1/23 Add methods for the UI controller to invoke, to query/update/delete/create new passphrases.
+  public void fetch(String key) {
+    repository
+        .get(key)
+        .subscribe(passphrase::postValue, this::postThrowable, pending);
+  }
+
+  public void fetch() {
+    repository
+        .get()
+        .subscribe(passphrases::postValue, this::postThrowable, pending);
+  }
+
+  public void search(String fragment) {
+    repository
+        .search(fragment)
+        .subscribe(passphrases::postValue, this::postThrowable, pending);
+  }
+
+  public void save(Passphrase passphrase) {
+    repository
+        .save(passphrase)
+        .subscribe(this.passphrase::postValue, this::postThrowable, pending);
+  }
+
+  public void delete(String key) {
+    repository
+        .delete(key)
+        .subscribe(() -> {}, this::postThrowable, pending); // TODO: 11/2/23 Refresh displayed list.
+  }
+
   @Override
-  public void onStop(@NotNull LifecycleOwner owner) {
+  public void onStop(@NonNull LifecycleOwner owner) {
     DefaultLifecycleObserver.super.onStop(owner);
     pending.clear();
   }
@@ -57,4 +86,5 @@ public class PassphraseViewModel extends ViewModel implements DefaultLifecycleOb
     Log.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
     this.throwable.postValue(throwable);
   }
+
 }
