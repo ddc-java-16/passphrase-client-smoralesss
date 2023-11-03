@@ -1,7 +1,6 @@
 package edu.cnm.deepdive.passphrase.controller;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.view.Menu;
@@ -9,15 +8,16 @@ import android.view.MenuItem;
 import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.lifecycle.ViewModelProvider;
 import dagger.hilt.android.AndroidEntryPoint;
+import edu.cnm.deepdive.passphrase.databinding.ActivityLoginBinding;
 import edu.cnm.deepdive.passphrase.R;
 import edu.cnm.deepdive.passphrase.databinding.ActivityMainBinding;
 import edu.cnm.deepdive.passphrase.model.Passphrase;
 import edu.cnm.deepdive.passphrase.service.PassphraseServiceProxy;
 import edu.cnm.deepdive.passphrase.viewmodel.LoginViewModel;
-import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import javax.inject.Inject;
 
@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
 
   private ActivityMainBinding binding;
   private LoginViewModel viewModel;
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
     setContentView(binding.getRoot());
     viewModel = new ViewModelProvider(this)
         .get(LoginViewModel.class);
-    viewModel.getAccount()
+    viewModel
+        .getAccount()
         .observe(this, (account) -> {
           if (account != null) {
 //            binding.name.setText(account.getDisplayName());
@@ -46,9 +46,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LoginActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             //noinspection unchecked
-            startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+            startActivity(
+                intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
           }
         });
+
   }
 
   @Override
@@ -69,4 +71,5 @@ public class MainActivity extends AppCompatActivity {
     }
     return handled;
   }
+
 }
