@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -25,6 +26,7 @@ public final class Passphrase {
   private static final String TO_STRING_FORMAT = "%1$s[key=%2$s, name=%3$s, words=%4$s, length=%5$d]";
 
   @Expose(deserialize = true, serialize = false)
+  @SerializedName(value = "id", alternate = {"key"})
   private final String key = null;
 
   @Expose(deserialize = true, serialize = false)

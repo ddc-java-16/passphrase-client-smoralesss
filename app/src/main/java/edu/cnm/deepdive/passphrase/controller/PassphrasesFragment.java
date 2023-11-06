@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.passphrase.controller;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +28,12 @@ public class PassphrasesFragment extends Fragment {
     //noinspection DataFlowIssue
     binding.search.setOnClickListener((v) ->
         viewModel.search(binding.searchText.getText().toString()));
-    binding.create.setOnClickListener((v) -> Navigation.findNavController(binding.getRoot())
-        .navigate(PassphrasesFragmentDirections.openEditPassphraseFragment()));
+    binding.create.setOnClickListener((v) -> openDialog(null));
     // TODO: 11/2/23 Attach listeners.
     return binding.getRoot();
   }
+
+
 
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -41,8 +43,20 @@ public class PassphrasesFragment extends Fragment {
     getLifecycle().addObserver(viewModel);
     viewModel
         .getPassphrases()
-        .observe(getViewLifecycleOwner(), (passphrases) ->
-            binding.passphrases.setAdapter(new PassphrasesAdapter(requireContext(), passphrases)));
+        .observe(
+            getViewLifecycleOwner(),
+            (passphrases) ->
+                binding.passphrases.setAdapter(
+                    new PassphrasesAdapter(
+                        requireContext(),
+                        passphrases,
+                        (v, pos, passphrase) -> openDialog(passphrase.getKey()),
+                        (v, pos, passphrase) -> Log.d(getClass().getSimpleName(),
+                            passphrase + " long-clicked"))));
   }
 
+  private void openDialog(String key) {
+    Navigation.findNavController(binding.getRoot())
+        .navigate(PassphrasesFragmentDirections.openEditPassphraseFragment().setKey(key));
+  }
 }
