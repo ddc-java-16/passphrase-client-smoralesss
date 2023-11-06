@@ -7,6 +7,7 @@ import com.google.gson.annotations.Expose;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
@@ -25,14 +26,19 @@ public final class Passphrase {
 
   @Expose(deserialize = true, serialize = false)
   private final String key = null;
+
   @Expose(deserialize = true, serialize = false)
   private final Date created = null;
+
   @Expose(deserialize = true, serialize = false)
   private final Date modified = null;
+
   @Expose
   private String name;
+
   @Expose
   private List<String> words;
+
   @Expose(deserialize = false, serialize = true)
   private int length;
 
