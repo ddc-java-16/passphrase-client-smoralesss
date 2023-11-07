@@ -110,6 +110,7 @@ public class EditPassphraseFragment extends DialogFragment implements TextWatche
    */
   private void save() {
     passphrase.setName(binding.name.getText().toString().strip());
+    passphrase.clear();
     SPLITTER
         .splitAsStream(binding.words.getText().toString())
         .filter((word) -> !word.isEmpty())
