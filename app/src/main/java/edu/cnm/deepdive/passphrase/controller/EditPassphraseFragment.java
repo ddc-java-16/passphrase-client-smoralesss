@@ -45,7 +45,7 @@ public class EditPassphraseFragment extends DialogFragment implements TextWatche
     dialog.setOnShowListener((dlg) -> checkSubmitConditions());
     binding.name.addTextChangedListener(this);
     binding.words.addTextChangedListener(this);
-    binding.generate.setOnClickListener((v) -> { /* TODO Request generation of random passphrase. */ });
+    binding.generate.setOnClickListener((v) -> viewModel.generate(binding.length.getValue()));
     binding.length.setMinValue(2); // FIXME: 11/3/23 Read from resources.
     binding.length.setMaxValue(10); // FIXME: 11/3/23 Read from resources.
     return dialog;
@@ -63,8 +63,25 @@ public class EditPassphraseFragment extends DialogFragment implements TextWatche
     super.onViewCreated(view, savedInstanceState);
     viewModel = new ViewModelProvider(requireActivity())
         .get(PassphraseViewModel.class);
-    // TODO: 11/6/23 Observer viewModel.getPassphrase()
-    passphrase = new Passphrase(); // TODO: 11/6/23 Only do this if we did not receive a key.
+    viewModel.clearGenerated();
+    viewModel
+        .getGenerated()
+        .observe(getViewLifecycleOwner(),
+            (words) -> binding.words.setText((words != null) ? String.join("\n", words) : ""));
+      passphrase = new Passphrase();
+    viewModel.clearPassphrase();
+    if (key != null) {
+      viewModel
+          .getPassphrase()
+          .observe(getViewLifecycleOwner(), (passphrase) -> {
+            if (passphrase != null) {
+              binding.name.setText(passphrase.getName());
+              binding.words.setText(String.join("\n", passphrase.getWords()));
+              this.passphrase = passphrase;
+            }
+          });
+      viewModel.fetch(key);
+    }
   }
 
   @Override
@@ -88,7 +105,9 @@ public class EditPassphraseFragment extends DialogFragment implements TextWatche
     checkSubmitConditions();
   }
 
-  /** @noinspection DataFlowIssue*/
+  /**
+   * @noinspection DataFlowIssue
+   */
   private void save() {
     passphrase.setName(binding.name.getText().toString().strip());
     SPLITTER
