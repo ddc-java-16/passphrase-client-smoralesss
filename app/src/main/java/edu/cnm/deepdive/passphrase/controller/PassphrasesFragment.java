@@ -37,7 +37,6 @@ public class PassphrasesFragment extends Fragment {
     return binding.getRoot();
   }
 
-
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
@@ -69,16 +68,16 @@ public class PassphrasesFragment extends Fragment {
     PopupMenu popup = new PopupMenu(requireContext(), view);
     Menu menu = popup.getMenu();
     popup.getMenuInflater().inflate(R.menu.passphrase_actions, menu);
-   menu.findItem(R.id.edit_passphrase).setOnMenuItemClickListener((item) -> {
-     openDialog(passphrase.getKey());
-     return true;
-   });
-   menu.findItem(R.id.delete_passphrase).setOnMenuItemClickListener((item) -> {
-     // TODO: 11/7/23 Ask for user confirmation.
-     viewModel.delete(passphrase.getKey());
-     // TODO: 11/7/23 Modify PassphraseViewModel to refresh automatically after successful creation, update, or deletion.
-     return true;
-   });
+    menu.findItem(R.id.edit_passphrase).setOnMenuItemClickListener((item) -> {
+      openDialog(passphrase.getKey());
+      return true;
+    });
+    menu.findItem(R.id.delete_passphrase).setOnMenuItemClickListener((item) -> {
+      // TODO: 11/7/23 Ask for user confirmation.
+      viewModel.delete(passphrase.getKey());
+      // TODO: 11/7/23 Modify PassphraseViewModel to refresh automatically after successful creation, update, or deletion.
+      return true;
+    });
     popup.show();
   }
 }
